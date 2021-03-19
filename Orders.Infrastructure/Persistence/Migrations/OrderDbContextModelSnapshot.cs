@@ -3,6 +3,8 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Orders.Infrastructure;
 
 namespace Orders.Infrastructure.Persistence.Migrations
 {
@@ -13,11 +15,11 @@ namespace Orders.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("ProductVersion", "3.1.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Orders.Domain.Aggregates.OrderAggregate.Address", b =>
+            modelBuilder.Entity("Orders.Domain.OrderAggregate.Address", b =>
                 {
                     b.Property<Guid>("AddressId")
                         .ValueGeneratedOnAdd()
@@ -55,6 +57,9 @@ namespace Orders.Infrastructure.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
@@ -79,14 +84,17 @@ namespace Orders.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("OrderId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -100,17 +108,13 @@ namespace Orders.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Orders.Domain.OrderAggregate.Order", b =>
                 {
-                    b.HasOne("Orders.Domain.Aggregates.OrderAggregate.Address", "BillingAddress")
+                    b.HasOne("Orders.Domain.OrderAggregate.Address", "BillingAddress")
                         .WithMany()
                         .HasForeignKey("BillingAddressAddressId");
 
-                    b.HasOne("Orders.Domain.Aggregates.OrderAggregate.Address", "ShippingAddress")
+                    b.HasOne("Orders.Domain.OrderAggregate.Address", "ShippingAddress")
                         .WithMany()
                         .HasForeignKey("ShippingAddressAddressId");
-
-                    b.Navigation("BillingAddress");
-
-                    b.Navigation("ShippingAddress");
                 });
 
             modelBuilder.Entity("Orders.Domain.OrderAggregate.OrderItem", b =>
@@ -118,11 +122,6 @@ namespace Orders.Infrastructure.Persistence.Migrations
                     b.HasOne("Orders.Domain.OrderAggregate.Order", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId");
-                });
-
-            modelBuilder.Entity("Orders.Domain.OrderAggregate.Order", b =>
-                {
-                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

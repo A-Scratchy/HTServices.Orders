@@ -17,7 +17,7 @@ namespace Orders.Application.Commands.Handlers
         {
             var entity = new Order()
             {
-                Id = new Guid(),
+                Id = request.OrderId ?? new Guid(),
                 Reference = request.Reference,
                 BillingAddress = new Address(request.BillingStreet, request.BillingCity, request.BillingState,
                     request.BillingCountry, request.BillingPostCode),
@@ -30,8 +30,8 @@ namespace Orders.Application.Commands.Handlers
             {
                 entity.OrderItems.Add(new OrderItem()
                 {
-                    Name = item.Name,
-                    Cost = item.Cost,
+                    ProductName = item.Name,
+                    Price = item.Price,
                     Quantity = item.Quantity
                 });
             }

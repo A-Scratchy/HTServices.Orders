@@ -1,9 +1,13 @@
-﻿namespace Orders.Domain.OrderAggregate
+﻿using System;
+
+namespace Orders.Domain.OrderAggregate
 {
     public class OrderItem : Entity
     {
-        public string Name { get; set; } 
-        public decimal Cost { get; set; }
+        public Guid ProductId { get; set; }
+
+        public string ProductName { get; set; }
         public int Quantity { get; set; }
+        public decimal Price { get; set; }
     }
 }

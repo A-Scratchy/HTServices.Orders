@@ -6,7 +6,7 @@ namespace Orders.Domain.OrderAggregate
 {
     public class Order : Entity, IAggregateRoot
     {
-        private DateTime OrderDate { get; set; }
+        public DateTime OrderDate { get; set; }
         public string Reference { get; set; }
         public Address ShippingAddress { get; set; }
         public Address BillingAddress { get; set; }
@@ -14,7 +14,7 @@ namespace Orders.Domain.OrderAggregate
         public string Description { get; set; }
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         
-        public decimal TotalCost => OrderItems.Aggregate(0M, (a, b) => a += b.Cost);
+        public decimal TotalCost => OrderItems.Aggregate(0M, (a, b) => a += b.Price);
 
         public Order()
         {
